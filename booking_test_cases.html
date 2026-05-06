@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking.com – QA Test Cases</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c23;
+    --border: #1e2330;
+    --accent: #003580;
+    --accent-bright: #006ce4;
+    --gold: #febb02;
+    --green: #00c48c;
+    --red: #ff4757;
+    --orange: #ffa502;
+    --text: #e8eaf0;
+    --text-muted: #6b7590;
+    --text-dim: #3a4155;
+    --login: #7c5cfc;
+    --search: #006ce4;
+    --reservation: #00c48c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 48px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .logo-mark {
+    width: 48px;
+    height: 48px;
+    background: var(--accent-bright);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    letter-spacing: -1px;
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: clamp(24px, 5vw, 38px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    color: var(--text);
+  }
+
+  h1 span {
+    color: var(--accent-bright);
+  }
+
+  .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+  }
+
+  /* Summary Cards */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+    animation: fadeDown 0.6s 0.1s ease both;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-bright);
+  }
+
+  .stat-number {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .stat-total .stat-number { color: var(--accent-bright); }
+  .stat-login .stat-number { color: var(--login); }
+  .stat-search .stat-number { color: var(--search); }
+  .stat-res .stat-number { color: var(--reservation); }
+  .stat-pending .stat-number { color: var(--gold); }
+
+  /* Section */
+  .section {
+    margin-bottom: 40px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .section:nth-child(1) { animation-delay: 0.15s; }
+  .section:nth-child(2) { animation-delay: 0.25s; }
+  .section:nth-child(3) { animation-delay: 0.35s; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .login-dot { background: var(--login); box-shadow: 0 0 10px var(--login); }
+  .search-dot { background: var(--search); box-shadow: 0 0 10px var(--search); }
+  .res-dot { background: var(--reservation); box-shadow: 0 0 10px var(--reservation); }
+
+  .section-title {
+    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+  }
+
+  .section-count {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* Test Case Cards */
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    border-color: var(--border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .card.open {
+    border-color: var(--accent-bright);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+  }
+
+  .tc-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .login-id { background: rgba(124,92,252,0.15); color: var(--login); }
+  .search-id { background: rgba(0,108,228,0.15); color: var(--accent-bright); }
+  .res-id { background: rgba(0,196,140,0.15); color: var(--reservation); }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .status-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .status-pending { background: rgba(254,187,2,0.12); color: var(--gold); border: 1px solid rgba(254,187,2,0.25); }
+  .status-pass { background: rgba(0,196,140,0.12); color: var(--green); border: 1px solid rgba(0,196,140,0.25); }
+  .status-fail { background: rgba(255,71,87,0.12); color: var(--red); border: 1px solid rgba(255,71,87,0.25); }
+
+  .chevron {
+    color: var(--text-dim);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+
+  .card.open .chevron { transform: rotate(180deg); }
+
+  /* Card Body */
+  .card-body {
+    display: none;
+    padding: 0 18px 18px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+
+  .card.open .card-body { display: block; }
+
+  .card-body-inner {
+    padding-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  @media (max-width: 600px) {
+    .card-body-inner { grid-template-columns: 1fr; }
+    h1 { font-size: 22px; }
+  }
+
+  .detail-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .detail-block.full { grid-column: 1 / -1; }
+
+  .detail-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .detail-value {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: pre-line;
+  }
+
+  .detail-value.mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+  }
+
+  .steps-list {
+    list-style: none;
+    counter-reset: step-counter;
+  }
+
+  .steps-list li {
+    counter-increment: step-counter;
+    display: flex;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .steps-list li::before {
+    content: counter(step-counter);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--accent-bright);
+    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Status changer */
+  .status-select {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .status-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+    background: var(--surface);
+    color: var(--text-muted);
+  }
+
+  .status-btn:hover { opacity: 0.85; }
+  .status-btn.active-pass { background: rgba(0,196,140,0.2); color: var(--green); border-color: rgba(0,196,140,0.4); }
+  .status-btn.active-fail { background: rgba(255,71,87,0.2); color: var(--red); border-color: rgba(255,71,87,0.4); }
+  .status-btn.active-pending { background: rgba(254,187,2,0.2); color: var(--gold); border-color: rgba(254,187,2,0.4); }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="logo-mark">B.</div>
+      <div>
+        <h1>Booking.com <span>QA</span> Test Cases</h1>
+        <div class="subtitle">// Covers: Login · Hotel Search · Hotel Reservation</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="stat-card stat-total">
+      <div class="stat-number" id="count-total">15</div>
+      <div class="stat-label">Total Cases</div>
+    </div>
+    <div class="stat-card stat-login">
+      <div class="stat-number">5</div>
+      <div class="stat-label">Login</div>
+    </div>
+    <div class="stat-card stat-search">
+      <div class="stat-number">5</div>
+      <div class="stat-label">Search</div>
+    </div>
+    <div class="stat-card stat-res">
+      <div class="stat-number">5</div>
+      <div class="stat-label">Reservation</div>
+    </div>
+    <div class="stat-card stat-pending">
+      <div class="stat-number" id="count-pending">15</div>
+      <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card" style="--c:var(--green)">
+      <div class="stat-number" id="count-pass" style="color:var(--green)">0</div>
+      <div class="stat-label">Pass</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="count-fail" style="color:var(--red)">0</div>
+      <div class="stat-label">Fail</div>
+    </div>
+  </div>
+
+  <!-- LOGIN SECTION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-dot login-dot"></div>
+      <div class="section-title">Login</div>
+      <div class="section-count">5 test cases</div>
+    </div>
+    <div class="cards" id="login-cards"></div>
+  </div>
+
+  <!-- SEARCH SECTION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-dot search-dot"></div>
+      <div class="section-title">Hotel Search</div>
+      <div class="section-count">5 test cases</div>
+    </div>
+    <div class="cards" id="search-cards"></div>
+  </div>
+
+  <!-- RESERVATION SECTION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-dot res-dot"></div>
+      <div class="section-title">Hotel Reservation</div>
+      <div class="section-count">5 test cases</div>
+    </div>
+    <div class="cards" id="res-cards"></div>
+  </div>
+
+</div>
+
+<script>
+const data = {
+  login: [
+    {
+      id: 'TC-L01',
+      title: 'Valid Login with Correct Credentials',
+      pre: 'User has a registered Booking.com account',
+      steps: [
+        'Navigate to Booking.com',
+        "Click 'Sign In'",
+        'Enter valid email',
+        'Enter valid password',
+        "Click 'Sign In' button"
+      ],
+      input: 'Email: testuser@email.com\nPassword: ValidPass@123',
+      expected: 'User is successfully logged in and redirected to homepage with account name displayed',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-L02',
+      title: 'Invalid Login – Wrong Password',
+      pre: 'User has a registered Booking.com account',
+      steps: [
+        'Navigate to Booking.com',
+        "Click 'Sign In'",
+        'Enter valid email',
+        'Enter incorrect password',
+        "Click 'Sign In' button"
+      ],
+      input: 'Email: testuser@email.com\nPassword: WrongPass999',
+      expected: "Login fails; error message displayed: 'Incorrect email or password'",
+      status: 'Pending'
+    },
+    {
+      id: 'TC-L03',
+      title: 'Invalid Login – Unregistered Email',
+      pre: 'Browser is open on Booking.com',
+      steps: [
+        'Navigate to Booking.com',
+        "Click 'Sign In'",
+        'Enter an unregistered email',
+        'Enter any password',
+        "Click 'Sign In' button"
+      ],
+      input: 'Email: notexist@fake.com\nPassword: AnyPass123',
+      expected: 'Login fails; error message indicates account not found or invalid credentials',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-L04',
+      title: 'Login with Empty Fields',
+      pre: 'Browser is open on Booking.com login page',
+      steps: [
+        'Navigate to Sign In page',
+        'Leave email and password fields empty',
+        "Click 'Sign In' button"
+      ],
+      input: 'Email: (empty)\nPassword: (empty)',
+      expected: 'Form validation triggers; error shown requiring email and password fields',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-L05',
+      title: 'Logout Functionality',
+      pre: 'User is logged into their Booking.com account',
+      steps: [
+        'Click on account name/avatar (top right)',
+        "Select 'Sign out' from dropdown",
+        'Observe redirect'
+      ],
+      input: 'N/A',
+      expected: "User is logged out and redirected to homepage; 'Sign In' button visible again",
+      status: 'Pending'
+    }
+  ],
+  search: [
+    {
+      id: 'TC-S01',
+      title: 'Search Hotels by Destination and Dates',
+      pre: 'User is on Booking.com homepage (logged in or guest)',
+      steps: [
+        'Enter destination in search box',
+        'Select check-in date',
+        'Select check-out date',
+        'Set 2 adults, 1 room',
+        "Click 'Search'"
+      ],
+      input: 'Destination: Paris, France\nCheck-in: 2026-06-10\nCheck-out: 2026-06-15\nGuests: 2 Adults, 1 Room',
+      expected: 'Search results page loads showing available hotels in Paris for selected dates with prices',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-S02',
+      title: 'Search with Filters – Star Rating',
+      pre: 'Search results are displayed for Paris, France',
+      steps: [
+        'Perform a hotel search',
+        "In the left filter panel, select '4 stars' and '5 stars'",
+        'Observe filtered results'
+      ],
+      input: 'Filter: Star Rating = 4★ and 5★',
+      expected: 'Results update to show only 4-star and 5-star hotels; lower-rated hotels are hidden',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-S03',
+      title: 'Search with Price Range Filter',
+      pre: 'Search results are displayed for a destination',
+      steps: [
+        'Perform a hotel search',
+        'Set price range filter to $50–$150/night',
+        'Observe updated results'
+      ],
+      input: 'Price Range: $50 – $150 per night',
+      expected: 'Only hotels within the specified price range are displayed; out-of-range hotels removed',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-S04',
+      title: 'Search with Invalid / Nonexistent Destination',
+      pre: 'User is on Booking.com homepage',
+      steps: [
+        'Enter an invalid destination in the search field',
+        'Select any dates',
+        "Click 'Search'"
+      ],
+      input: "Destination: 'xyzinvalidcity123'\nCheck-in: 2026-06-10\nCheck-out: 2026-06-12",
+      expected: 'No results found message displayed or system suggests closest known destinations',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-S05',
+      title: 'Sort Search Results by Lowest Price',
+      pre: 'Search results are displayed for a valid destination',
+      steps: [
+        'Perform a hotel search',
+        "Click 'Sort by' dropdown",
+        "Select 'Price (lowest first)'",
+        'Review result order'
+      ],
+      input: 'Sort: Price – Lowest First',
+      expected: 'Hotels are reordered with lowest nightly price at top; prices increase down the list',
+      status: 'Pending'
+    }
+  ],
+  reservation: [
+    {
+      id: 'TC-R01',
+      title: 'Complete Hotel Reservation as Logged-In User',
+      pre: 'User is logged in; hotel search results are displayed',
+      steps: [
+        'Click on a hotel from results',
+        'Select room type',
+        "Click 'Reserve'",
+        'Fill in guest details',
+        'Enter payment info',
+        'Confirm booking'
+      ],
+      input: 'Hotel: Any available 4★\nRoom: Standard Double\nGuests: 2 Adults\nCard: 4111111111111111\nExp: 12/27  CVV: 123',
+      expected: 'Booking confirmation page displayed with reservation ID, hotel name, dates, and total cost',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-R02',
+      title: 'Attempt Reservation Without Login',
+      pre: 'User is NOT logged in; hotel detail page is open',
+      steps: [
+        'Search for a hotel without signing in',
+        'Select a room',
+        "Click 'Reserve'",
+        'Observe system behavior'
+      ],
+      input: 'N/A (guest user, no credentials)',
+      expected: 'System prompts user to sign in or continue as guest before proceeding to booking form',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-R03',
+      title: 'Reservation with Invalid Credit Card',
+      pre: 'User is logged in; guest details have been filled in',
+      steps: [
+        'Select a hotel and room',
+        "Click 'Reserve'",
+        'Fill in guest details',
+        'Enter invalid credit card',
+        "Click 'Complete booking'"
+      ],
+      input: 'Card Number: 1234567890123456\nExp: 01/23 (expired)\nCVV: 000',
+      expected: 'Payment fails; error message displayed indicating invalid or declined card details',
+      status: 'Pending'
+    },
+    {
+      id: 'TC-R04',
+      title: 'Verify Booking Appears in My Account',
+      pre: 'User has completed a successful reservation (TC-R01)',
+      steps: [
+        'Click on account name',
+        "Navigate to 'Bookings'",
+        'Check for the recent reservation'
+      ],
+      input: 'N/A',
+      expected: "The completed reservation is listed under 'Upcoming Bookings' with correct hotel, dates, and confirmation number",
+      status: 'Pending'
+    },
+    {
+      id: 'TC-R05',
+      title: 'Cancel a Hotel Reservation',
+      pre: 'User is logged in and has an upcoming booking with free cancellation',
+      steps: [
+        "Go to account 'Bookings'",
+        'Select the active booking',
+        "Click 'Cancel booking'",
+        'Confirm cancellation'
+      ],
+      input: 'Booking: Any upcoming reservation with free cancellation policy',
+      expected: "Booking status changes to 'Cancelled'; confirmation email sent; refund policy shown",
+      status: 'Pending'
+    }
+  ]
+};
+
+// Status state
+const statusState = {};
+
+function getStatusClass(s) {
+  if (s === 'Pass') return 'status-pass';
+  if (s === 'Fail') return 'status-fail';
+  return 'status-pending';
+}
+
+function getIdClass(id) {
+  if (id.startsWith('TC-L')) return 'login-id';
+  if (id.startsWith('TC-S')) return 'search-id';
+  return 'res-id';
+}
+
+function updateSummary() {
+  const all = Object.values(statusState);
+  document.getElementById('count-pass').textContent = all.filter(s => s === 'Pass').length;
+  document.getElementById('count-fail').textContent = all.filter(s => s === 'Fail').length;
+  document.getElementById('count-pending').textContent = all.filter(s => s === 'Pending').length;
+}
+
+function renderCard(tc) {
+  statusState[tc.id] = tc.status;
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + tc.id;
+
+  const stepsHtml = tc.steps.map(s => `<li>${s}</li>`).join('');
+
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard('${tc.id}')">
+      <span class="tc-id ${getIdClass(tc.id)}">${tc.id}</span>
+      <span class="card-title">${tc.title}</span>
+      <span class="status-badge ${getStatusClass(tc.status)}" id="badge-${tc.id}">${tc.status}</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="card-body-inner">
+        <div class="detail-block">
+          <div class="detail-label">Preconditions</div>
+          <div class="detail-value">${tc.pre}</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">Input Data</div>
+          <div class="detail-value mono">${tc.input}</div>
+        </div>
+        <div class="detail-block full">
+          <div class="detail-label">Test Steps</div>
+          <ol class="steps-list">${stepsHtml}</ol>
+        </div>
+        <div class="detail-block full">
+          <div class="detail-label">Expected Result</div>
+          <div class="detail-value">${tc.expected}</div>
+        </div>
+        <div class="detail-block full">
+          <div class="detail-label">Update Status</div>
+          <div class="status-select">
+            <button class="status-btn ${tc.status === 'Pass' ? 'active-pass' : ''}" onclick="setStatus('${tc.id}', 'Pass')">✓ Pass</button>
+            <button class="status-btn ${tc.status === 'Fail' ? 'active-fail' : ''}" onclick="setStatus('${tc.id}', 'Fail')">✗ Fail</button>
+            <button class="status-btn ${tc.status === 'Pending' ? 'active-pending' : ''}" onclick="setStatus('${tc.id}', 'Pending')">◎ Pending</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+function toggleCard(id) {
+  const card = document.getElementById('card-' + id);
+  card.classList.toggle('open');
+}
+
+function setStatus(id, status) {
+  statusState[id] = status;
+
+  // Update badge
+  const badge = document.getElementById('badge-' + id);
+  badge.textContent = status;
+  badge.className = 'status-badge ' + getStatusClass(status);
+
+  // Update buttons
+  const card = document.getElementById('card-' + id);
+  const btns = card.querySelectorAll('.status-btn');
+  btns.forEach(btn => {
+    btn.className = 'status-btn';
+    if (btn.textContent.includes('Pass') && status === 'Pass') btn.classList.add('active-pass');
+    if (btn.textContent.includes('Fail') && status === 'Fail') btn.classList.add('active-fail');
+    if (btn.textContent.includes('Pending') && status === 'Pending') btn.classList.add('active-pending');
+  });
+
+  updateSummary();
+}
+
+// Render all
+const loginContainer = document.getElementById('login-cards');
+const searchContainer = document.getElementById('search-cards');
+const resContainer = document.getElementById('res-cards');
+
+data.login.forEach(tc => loginContainer.appendChild(renderCard(tc)));
+data.search.forEach(tc => searchContainer.appendChild(renderCard(tc)));
+data.reservation.forEach(tc => resContainer.appendChild(renderCard(tc)));
+
+updateSummary();
+</script>
+</body>
+</html>
